@@ -1,9 +1,3 @@
-# Count number of rows
-# Go through all rows, looking for unique candidates, put into list
-# Divide each candidates votes by total number of votes
-# Count all rows that have candidates name, do for each candidate
-# Find highest percentage
-
 import csv
 import os
 
@@ -12,9 +6,18 @@ file_to_load = os.path.join("resources","election_results.csv")
 #assign variable to save a file
 file_to_save = os.path.join("analysis","election_analysis.txt")
 
+#total votes counter
 total_votes = 0
+#list each candidate
 candidates_options = []
+#lists each candidate and their votes
 candidate_votes = {}
+#winning candidate variable
+winning_candidate = ""
+#winning number of votes
+winning_count = 0
+#winning percentage
+winning_percentage = 0
 
 #opens election results
 with open(file_to_load) as election_data:
@@ -41,5 +44,26 @@ with open(file_to_load) as election_data:
         #adds a vote to candidate's count
         candidate_votes[candidate_name] += 1
 
-print(candidate_votes)
+for candidate_name in candidate_votes:
+    #gets # of votes for candidate
+    votes = candidate_votes[candidate_name]
+    # calculates vote percentage
+    vote_percentage = float(votes) / float(total_votes) * 100
 
+    #prints each candidate's name, vote count, and vote percentage
+    print(f"{candidate_name}: {vote_percentage:.1f}% ({votes:,})\n")
+
+    #determine winning vote count and candidate
+    if (votes > winning_count) and (vote_percentage > winning_percentage):
+        winning_count = votes
+        winning_percentage = vote_percentage
+        winning_candidate = candidate_name
+    
+    winning_candidate_summary = (
+    f"-------------------------\n"
+    f"Winner: {winning_candidate}\n"
+    f"Winning Vote Count: {winning_count:,}\n"
+    f"Winning Percentage: {winning_percentage:.1f}%\n"
+    f"-------------------------\n")
+
+print(winning_candidate_summary)
